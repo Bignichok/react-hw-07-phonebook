@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import styles from "./ContactForm.module.css";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import {addContact} from '../../redux/phoneBookReducer'
+import PropTypes from "prop-types";
+import {addContact, toggleError} from '../../redux/phoneBookReducer'
+import { getContacts } from "../../redux/phoneBookSelectors";
+import styles from "./ContactForm.module.css";
 
 class ContactForm extends Component {
   static defaultProps = {
@@ -26,11 +27,16 @@ class ContactForm extends Component {
 
   submitHandler = (e) => {
     e.preventDefault()
-    const {name,number} = this.state
-    this.props.onAddContact(name, number)
+    const { name, number } = this.state
+    const {contacts,onToggleError,onAddContact} = this.props
     this.setState({name:'',number:''})
+    if (contacts && contacts.some((contact) => contact.name === name)) {
+      onToggleError(true)
+      setTimeout(()=> onToggleError(false),3000)
+    } else {
+      onAddContact(name, number)
+    }
   }
-  
 
   render() {
     return (
@@ -65,11 +71,15 @@ class ContactForm extends Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  contacts: getContacts(state)
+})
+
 const mapDispatchToProps = (dispatch) => {
   return {
-    onAddContact: (name,number) => dispatch(addContact(name,number))
+    onAddContact: (name, number) => dispatch(addContact(name, number)),
+    onToggleError: (error)=> dispatch(toggleError(error))
   }
 }
 
-
-export default connect(null,mapDispatchToProps)(ContactForm);
+export default connect(mapStateToProps,mapDispatchToProps)(ContactForm);

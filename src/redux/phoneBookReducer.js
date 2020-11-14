@@ -1,9 +1,11 @@
-import { v4 as uuidv4 } from "uuid";
+import { contactsAPI } from "../api/api";
 
+const FETCH_CONTACTS = "FETCH_CONTACTS";
 const ADD_CONTACT = "ADD_CONTACT";
 const DELETE_CONTACT = "DELETE_CONTACT";
 const CHANGE_FILTER = "CHANGE_FILTER";
 const TOGGLE_ERROR = "TOGGLE_ERROR";
+const TOGGLE_LOADING = "TOGGLE_LOADING";
 
 const initialState = {
   contacts: [],
@@ -14,27 +16,22 @@ const initialState = {
 
 const phoneBookReducers = (state = initialState, { type, payload }) => {
   switch (type) {
+    case FETCH_CONTACTS:
+      return {
+        ...state,
+        contacts: [...state.contacts, ...payload.contacts],
+      };
+
     case ADD_CONTACT:
       const newContact = {
+        id: payload.contact.id,
         name: payload.contact.name,
         number: payload.contact.number,
-        id: payload.contact.id,
       };
-      if (
-        state.contacts &&
-        state.contacts.some((contact) => contact.name === payload.contact.name)
-      ) {
-        return {
-          ...state,
-          showError: !payload.showError,
-        };
-      } else {
-        return {
-          ...state,
-          showError: payload.showError,
-          contacts: [...state.contacts, newContact],
-        };
-      }
+      return {
+        ...state,
+        contacts: [...state.contacts, newContact],
+      };
 
     case DELETE_CONTACT:
       return {
@@ -54,22 +51,37 @@ const phoneBookReducers = (state = initialState, { type, payload }) => {
         showError: payload.showError,
       };
 
+    case TOGGLE_LOADING:
+      return {
+        ...state,
+        loading: payload.loading,
+      };
+
     default:
       return state;
   }
 };
 
-export const addContact = (name, number) => {
+const fetchContactsSuccess = (contacts) => {
+  return {
+    type: FETCH_CONTACTS,
+    payload: {
+      contacts,
+    },
+  };
+};
+
+const addContactSuccess = ({ id, name, number }) => {
   return {
     type: ADD_CONTACT,
     payload: {
-      contact: { name, number, id: uuidv4() },
+      contact: { id, name, number },
       showError: false,
     },
   };
 };
 
-export const deleteContact = (id) => {
+const deleteContactSuccess = (id) => {
   return {
     type: DELETE_CONTACT,
     payload: {
@@ -94,6 +106,42 @@ export const toggleError = (showError) => {
       showError,
     },
   };
+};
+
+const toggleLoading = (loading) => ({
+  type: TOGGLE_LOADING,
+  payload: {
+    loading,
+  },
+});
+
+export const fetchContacts = () => (dispatch) => {
+  dispatch(toggleLoading(true));
+  contactsAPI
+    .getContacts()
+    .then((data) => {
+      dispatch(fetchContactsSuccess(data));
+      dispatch(toggleLoading(false));
+    })
+    .catch((error) => console.log(error));
+};
+
+export const addContact = (name, number) => (dispatch) => {
+  dispatch(toggleLoading(true));
+  contactsAPI
+    .addContact(name, number)
+    .then((data) => {
+      dispatch(addContactSuccess(data));
+      dispatch(toggleLoading(false));
+    })
+    .catch((error) => console.log(error));
+};
+
+export const deleteContact = (id) => (dispatch) => {
+  contactsAPI
+    .deleteContact(id)
+    .then(() => dispatch(deleteContactSuccess(id)))
+    .catch((error) => console.log(error));
 };
 
 export default phoneBookReducers;

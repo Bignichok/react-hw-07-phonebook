@@ -14,11 +14,12 @@ export const getVisibilityFilter = (state) => {
 
 export const getFilteredContacts = createSelector(
   [getContacts, getVisibilityFilter],
-  (contacts, visibilityFilter) => ({
-    contacts: contacts.filter((contact) =>
+  (contacts, visibilityFilter) => {
+    const filteredContacts = contacts.filter((contact) =>
       contact.name.toLowerCase().includes(visibilityFilter.toLowerCase())
-    ),
-  })
+    );
+    return filteredContacts;
+  }
 );
 
 export const getContactById = (state, id) => {

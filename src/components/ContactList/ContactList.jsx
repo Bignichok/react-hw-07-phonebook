@@ -9,7 +9,6 @@ import { getFilteredContacts } from "../../redux/phoneBookSelectors";
 
 
 const ContactList = ({ contacts }) => {
-
   return <TransitionGroup component='ul' className={`${styles.contactList} `}>
         {contacts.map(({ id }) => (
               <CSSTransition  key={id}
@@ -23,7 +22,7 @@ const ContactList = ({ contacts }) => {
 };
 
 
-const mapStateToProps = (state) => ( getFilteredContacts(state))
+const mapStateToProps = (state) => ({contacts: getFilteredContacts(state)})
 
 ContactList.defaultProps = {
   contacts: [],
@@ -33,7 +32,7 @@ ContactList.defaultProps = {
 ContactList.propTypes = {
   contacts: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
       number: PropTypes.string.isRequired,
     }),
