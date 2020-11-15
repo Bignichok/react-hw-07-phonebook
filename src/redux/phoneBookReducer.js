@@ -6,12 +6,13 @@ const DELETE_CONTACT = "DELETE_CONTACT";
 const CHANGE_FILTER = "CHANGE_FILTER";
 const TOGGLE_ERROR = "TOGGLE_ERROR";
 const TOGGLE_LOADING = "TOGGLE_LOADING";
-
+const FETCH_FAILURE = "FETCH_FAILURE";
 const initialState = {
   contacts: [],
   filter: "",
   showError: false,
   loading: false,
+  error: {},
 };
 
 const phoneBookReducers = (state = initialState, { type, payload }) => {
@@ -20,6 +21,12 @@ const phoneBookReducers = (state = initialState, { type, payload }) => {
       return {
         ...state,
         contacts: [...state.contacts, ...payload.contacts],
+      };
+
+    case FETCH_FAILURE:
+      return {
+        ...state,
+        error: payload.error,
       };
 
     case ADD_CONTACT:
@@ -67,6 +74,15 @@ const fetchContactsSuccess = (contacts) => {
     type: FETCH_CONTACTS,
     payload: {
       contacts,
+    },
+  };
+};
+
+const failureRequest = (error) => {
+  return {
+    type: FETCH_FAILURE,
+    payload: {
+      error,
     },
   };
 };
@@ -123,7 +139,7 @@ export const fetchContacts = () => (dispatch) => {
       dispatch(fetchContactsSuccess(data));
       dispatch(toggleLoading(false));
     })
-    .catch((error) => console.log(error));
+    .catch((error) => dispatch(failureRequest(error)));
 };
 
 export const addContact = (name, number) => (dispatch) => {
@@ -134,14 +150,14 @@ export const addContact = (name, number) => (dispatch) => {
       dispatch(addContactSuccess(data));
       dispatch(toggleLoading(false));
     })
-    .catch((error) => console.log(error));
+    .catch((error) => dispatch(failureRequest(error)));
 };
 
 export const deleteContact = (id) => (dispatch) => {
   contactsAPI
     .deleteContact(id)
     .then(() => dispatch(deleteContactSuccess(id)))
-    .catch((error) => console.log(error));
+    .catch((error) => dispatch(failureRequest(error)));
 };
 
 export default phoneBookReducers;
