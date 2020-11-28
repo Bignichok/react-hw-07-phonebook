@@ -12,6 +12,11 @@ export const getVisibilityFilter = (state) => {
   return state.phoneBook.filter;
 };
 
+export const getContactById = (state, id) => {
+  const contact = getContacts(state).find((contact) => contact.id === id);
+  return { ...contact };
+};
+
 export const getFilteredContacts = createSelector(
   [getContacts, getVisibilityFilter],
   (contacts, visibilityFilter) => {
@@ -21,8 +26,3 @@ export const getFilteredContacts = createSelector(
     return filteredContacts;
   }
 );
-
-export const getContactById = (state, id) => {
-  const contact = getContacts(state).find((contact) => contact.id === id);
-  return { ...contact };
-};

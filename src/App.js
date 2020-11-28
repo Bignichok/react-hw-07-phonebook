@@ -1,12 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { CSSTransition } from "react-transition-group";
+
 import { getContacts, getErrorState } from "./redux/phoneBookSelectors";
 import { fetchContacts } from "./redux/phoneBookReducer";
+
 import ContactList from "./components/ContactList/ContactList";
 import ContactForm from "./components/ContactForm/ContactForm";
 import Filter from "./components/Filter/Filter";
 import Error from "./components/Error/Error.jsx";
+
 import fadeStyles from "./css/fade.module.css";
 import errorFadeStyles from "./css/errorFadeStyles.module.css";
 import "./App.css";
@@ -78,12 +81,10 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    contacts: getContacts(state),
-    showError: getErrorState(state),
-  };
-};
+const mapStateToProps = (state) => ({
+  contacts: getContacts(state),
+  showError: getErrorState(state),
+});
 
 const mapDispatchToProps = {
   onFetchContacts: fetchContacts,

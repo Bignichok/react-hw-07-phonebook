@@ -1,9 +1,11 @@
 import React from "react";
-import styles from "./Filter.module.css";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+
 import {changeFilter} from '../../redux/phoneBookReducer'
 import { getVisibilityFilter } from "../../redux/phoneBookSelectors";
+
+import styles from "./Filter.module.css";
 
 const Filter = ({ filter, onChangeFilter }) => {
   return (

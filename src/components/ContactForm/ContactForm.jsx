@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+
 import {addContact, toggleError} from '../../redux/phoneBookReducer'
 import { getContacts } from "../../redux/phoneBookSelectors";
+
 import styles from "./ContactForm.module.css";
 
 class ContactForm extends Component {

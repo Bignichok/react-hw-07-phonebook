@@ -2,9 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import {CSSTransition,TransitionGroup,} from 'react-transition-group';
 import { connect } from "react-redux";
-import ContactsListItem from "./ContactListItem/ContactListItem";
-import styles from './ContactList.module.css'
+
 import { getFilteredContacts } from "../../redux/phoneBookSelectors";
+
+import ContactsListItem from "./ContactListItem/ContactListItem";
+
+import styles from './ContactList.module.css'
 
 
 
