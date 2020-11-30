@@ -14,7 +14,7 @@ export const getVisibilityFilter = (state) => {
 
 export const getContactById = (state, id) => {
   const contact = getContacts(state).find((contact) => contact.id === id);
-  return { ...contact };
+  return contact;
 };
 
 export const getFilteredContacts = createSelector(
